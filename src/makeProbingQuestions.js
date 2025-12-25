@@ -1,6 +1,6 @@
-import { auth, db } from './firebaseConfig.js';
+import { auth, db, isAdmin } from './firebaseConfig.js';
 import { signOut, onAuthStateChanged } from 'firebase/auth';
-import { collection, addDoc, serverTimestamp, getDocs, query, where } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, getDocs, query, where, doc, getDoc } from 'firebase/firestore';
 import Swal from 'sweetalert2';
 import Handsontable from 'handsontable';
 import 'handsontable/dist/handsontable.full.min.css';
@@ -92,9 +92,50 @@ function initTables() {
   });
 }
 
+// 메뉴 설정 확인 함수
+async function checkMenuAccess(user) {
+  // 관리자는 항상 접근 가능
+  if (isAdmin(user.uid)) {
+    return true;
+  }
+
+  try {
+    const settingsDoc = await getDoc(doc(db, 'menuSettings', 'main'));
+    
+    if (settingsDoc.exists()) {
+      const data = settingsDoc.data();
+      
+      // 활동 2가 off인 경우 접근 차단
+      if (data.activity2 === false) {
+        Swal.fire({
+          icon: 'error',
+          title: '접근 불가',
+          text: '이 페이지는 현재 비활성화되어 있습니다.',
+          confirmButtonText: '확인'
+        }).then(() => {
+          window.location.href = '/index.html';
+        });
+        return false;
+      }
+    }
+    
+    return true;
+  } catch (error) {
+    console.error('메뉴 설정 확인 오류:', error);
+    // 오류 발생 시 접근 허용 (기본값)
+    return true;
+  }
+}
+
 // 인증 상태 확인
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async (user) => {
   if (user) {
+    // 메뉴 접근 권한 확인
+    const hasAccess = await checkMenuAccess(user);
+    if (!hasAccess) {
+      return;
+    }
+
     currentUser = user;
     document.getElementById('userInfo').textContent = `👤 ${user.displayName || user.email} 님`;
     document.getElementById('logoutBtn').style.display = 'inline-block';

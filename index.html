@@ -48,12 +48,12 @@
     }
     
     .nav-item {
-      opacity: 0.5;
-      pointer-events: none;
+      display: none;
       transition: opacity 0.3s;
     }
     
     .nav-item.visible {
+      display: flex;
       opacity: 1;
       pointer-events: auto;
     }
@@ -137,7 +137,7 @@
         <a href="admin.html" class="nav-item admin-only" id="nav-admin">
           <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="3"></circle>
-            <path d="M12 1v6m0 6v6m9-9h-6m-6 0H3m15.364 6.364l-4.243-4.243m-4.242 0L5.636 17.364m12.728 0l-4.243-4.243m-4.242 0L5.636 6.636"></path>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
           </svg>
           <h2>관리자 페이지</h2>
           <p>모든 데이터를 확인하고 사용자를 등록합니다.</p>
@@ -151,8 +151,9 @@
   </div>
 
   <script type="module">
-    import { auth, googleProvider, isAdmin } from './src/firebaseConfig.js';
+    import { auth, googleProvider, isAdmin, db } from './src/firebaseConfig.js';
     import { signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth';
+    import { collection, getDocs, query, where, doc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
     import Swal from 'sweetalert2';
 
     // DOM 요소
@@ -270,17 +271,164 @@
       }
     });
 
+    // 메뉴 설정 불러오기 및 적용
+    async function loadMenuSettings() {
+      try {
+        const settingsDoc = await getDoc(doc(db, 'menuSettings', 'main'));
+        
+        if (settingsDoc.exists()) {
+          const data = settingsDoc.data();
+          
+          // 활동 1 표시/숨김
+          if (data.activity1 === false) {
+            navItems.activity01.style.display = 'none';
+          } else {
+            navItems.activity01.style.display = 'flex';
+          }
+          
+          // 활동 2 표시/숨김 (탐침질문 만들기, 다른 사람 결과보기)
+          if (data.activity2 === false) {
+            navItems.probing.style.display = 'none';
+            navItems.results.style.display = 'none';
+          } else {
+            navItems.probing.style.display = 'flex';
+            navItems.results.style.display = 'flex';
+          }
+        }
+      } catch (error) {
+        console.error('메뉴 설정 불러오기 오류:', error);
+      }
+    }
+
+    // 사용자 코드 확인 및 연결
+    async function checkAndLinkUserCode(user) {
+      try {
+        // 이미 연결된 사용자인지 확인
+        const userQuery = query(collection(db, 'users'), where('uid', '==', user.uid));
+        const userSnapshot = await getDocs(userQuery);
+        
+        if (!userSnapshot.empty) {
+          // 이미 연결된 사용자
+          return;
+        }
+
+        // 코드 입력받기
+        const result = await Swal.fire({
+          title: '사용자 코드 입력',
+          text: '관리자가 발급한 5자리 코드를 입력해주세요.',
+          input: 'text',
+          inputPlaceholder: '코드 입력',
+          inputAttributes: {
+            maxlength: 5,
+            style: 'text-transform: uppercase; font-family: monospace; font-size: 1.5rem; text-align: center; letter-spacing: 0.5rem;'
+          },
+          showCancelButton: false,
+          confirmButtonText: '확인',
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          inputValidator: (value) => {
+            if (!value || value.length !== 5) {
+              return '5자리 코드를 입력해주세요.';
+            }
+            return null;
+          }
+        });
+
+        if (result.isConfirmed && result.value) {
+          const code = result.value.toUpperCase().trim();
+          
+          // 관리자 코드 확인 (12345)
+          if (code === '12345') {
+            Swal.fire({
+              icon: 'success',
+              title: '관리자 인증',
+              text: '관리자로 로그인되었습니다.',
+              timer: 2000,
+              showConfirmButton: false
+            });
+            return; // 관리자는 바로 통과
+          }
+          
+          // 코드로 사용자 찾기
+          const codeQuery = query(collection(db, 'users'), where('code', '==', code));
+          const codeSnapshot = await getDocs(codeQuery);
+          
+          if (codeSnapshot.empty) {
+            Swal.fire({
+              icon: 'error',
+              title: '코드 오류',
+              text: '입력한 코드가 존재하지 않습니다.',
+              confirmButtonText: '확인'
+            });
+            // 로그아웃 처리
+            await signOut(auth);
+            return;
+          }
+
+          const userDoc = codeSnapshot.docs[0];
+          const userData = userDoc.data();
+          
+          if (userData.uid) {
+            Swal.fire({
+              icon: 'error',
+              title: '코드 사용됨',
+              text: '이미 사용된 코드입니다.',
+              confirmButtonText: '확인'
+            });
+            // 로그아웃 처리
+            await signOut(auth);
+            return;
+          }
+
+          // 사용자 연결
+          await updateDoc(doc(db, 'users', userDoc.id), {
+            uid: user.uid,
+            linkedAt: serverTimestamp()
+          });
+
+          Swal.fire({
+            icon: 'success',
+            title: '연결 완료',
+            text: '사용자 계정이 연결되었습니다!',
+            timer: 2000,
+            showConfirmButton: false
+          });
+        } else {
+          // 코드 입력 취소 시 로그아웃
+          await signOut(auth);
+        }
+        
+      } catch (error) {
+        console.error('사용자 코드 확인 오류:', error);
+        Swal.fire({
+          icon: 'error',
+          title: '오류',
+          text: '사용자 코드 확인 중 오류가 발생했습니다.',
+          confirmButtonText: '확인'
+        });
+        await signOut(auth);
+      }
+    }
+
     // 인증 상태 변경 감지
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, async (user) => {
       if (user) {
         // 로그인된 경우
         userInfo.textContent = `👤 ${user.displayName || user.email} 님`;
         loginBtn.style.display = 'none';
         logoutBtn.style.display = 'flex';
 
+        // 관리자가 아닌 경우 사용자 코드 확인
+        if (!isAdmin(user.uid)) {
+          await checkAndLinkUserCode(user);
+        }
+
+        // 메뉴 설정 불러오기
+        await loadMenuSettings();
+
         // 모든 네비게이션 항목 활성화
         Object.values(navItems).forEach(navItem => {
-          if (navItem) {
+          if (navItem && navItem.style.display !== 'none') {
             navItem.classList.add('visible');
           }
         });
