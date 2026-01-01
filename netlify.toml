@@ -4,12 +4,9 @@
   # 빌드 출력 디렉토리
   publish = "dist"
 
-# SPA 라우팅을 위한 리다이렉트 설정
-# 모든 경로를 index.html로 리다이렉트 (클라이언트 사이드 라우팅 지원)
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+# Multi-page application이므로 실제 HTML 파일이 있으면 그대로 서빙
+# 파일이 존재하지 않는 경우에만 index.html로 폴백
+# (Netlify는 기본적으로 정적 파일을 먼저 찾으므로 별도 리다이렉트 불필요)
 
 # 환경 변수 설정 (필요시)
 # [build.environment]

@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite';
+import { resolve } from 'path';
 
 export default defineConfig({
   // 빌드 설정
@@ -11,6 +12,18 @@ export default defineConfig({
     chunkSizeWarningLimit: 1000,
     // 빌드 최적화 설정
     rollupOptions: {
+      // Multi-page application: 모든 HTML 파일을 entry point로 설정
+      input: {
+        main: resolve(__dirname, 'index.html'),
+        '01_mock_eval_01_bottle_crack': resolve(__dirname, '01_mock_eval_01_bottle_crack.html'),
+        '01_mock_eval_02_college_entrance': resolve(__dirname, '01_mock_eval_02_college_entrance.html'),
+        '02_probing_question_01_escape_plan': resolve(__dirname, '02_probing_question_01_escape_plan.html'),
+        '02_probing_question_02_health_inequality': resolve(__dirname, '02_probing_question_02_health_inequality.html'),
+        'activity01': resolve(__dirname, 'activity01.html'),
+        'admin': resolve(__dirname, 'admin.html'),
+        'results': resolve(__dirname, 'results.html'),
+        'makeProbingQuestions': resolve(__dirname, 'makeProbingQuestions.html')
+      },
       output: {
         // 청크 파일명 형식
         chunkFileNames: 'assets/js/[name]-[hash].js',
