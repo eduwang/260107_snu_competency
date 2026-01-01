@@ -43,11 +43,24 @@
     <!-- 데이터 관리 탭 -->
     <div id="data-tab" class="tab-content">
       <div class="tab-header">
-        <h2>데이터 관리</h2>
-        <div class="filter-section">
-          <select id="userFilter" class="filter-select">
-            <option value="">전체 사용자</option>
-          </select>
+        <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+          <h2 style="margin: 0;">데이터 관리</h2>
+          <div class="filter-section" style="display: flex; align-items: center; gap: 1rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <label style="font-size: 0.875rem; color: #6b7280;">시나리오:</label>
+              <select id="scenarioFilter" class="filter-select" style="min-width: 150px;">
+                <option value="">전체</option>
+                <option value="대피시뮬레이션">대피시뮬레이션</option>
+                <option value="건강불평등">건강불평등</option>
+              </select>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <label style="font-size: 0.875rem; color: #6b7280;">사용자:</label>
+              <select id="userFilter" class="filter-select" style="min-width: 150px;">
+                <option value="">전체 사용자</option>
+              </select>
+            </div>
+          </div>
         </div>
       </div>
       <div class="data-management-layout">

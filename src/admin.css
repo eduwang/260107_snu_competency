@@ -354,6 +354,107 @@
   font-size: 1.125rem;
 }
 
+/* 질문 상세 섹션 */
+.questions-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.question-detail-section {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.question-content-section {
+  margin-top: 1rem;
+}
+
+.question-text-content {
+  color: #1f2937;
+  line-height: 1.8;
+}
+
+.student-answer-content {
+  color: #1f2937;
+  line-height: 1.8;
+}
+
+.student-answer-content img {
+  max-width: 100%;
+  height: auto;
+  margin: 1rem 0;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.student-answer-content img:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* 탐침 질문 테이블 */
+.probing-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.probing-table th,
+.probing-table td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.probing-table th {
+  background: #f3f4f6;
+  font-weight: 600;
+  color: #374151;
+  font-size: 0.875rem;
+}
+
+.probing-table td {
+  font-size: 0.875rem;
+  color: #1f2937;
+}
+
+.probing-table tr:last-child td {
+  border-bottom: none;
+}
+
+.situation-cell {
+  font-weight: 500;
+  color: #059669;
+  width: 200px;
+}
+
+.question-cell {
+  word-break: break-word;
+}
+
+/* 이미지 팝업 스타일 */
+.image-popup {
+  max-width: 95vw !important;
+  max-height: 95vh !important;
+}
+
+.image-popup-close {
+  color: white !important;
+  font-size: 2rem !important;
+  opacity: 0.8;
+}
+
+.image-popup-close:hover {
+  opacity: 1;
+}
+
 .detail-header {
   display: flex;
   justify-content: space-between;

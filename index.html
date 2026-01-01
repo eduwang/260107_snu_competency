@@ -107,7 +107,7 @@
             <line x1="16" y1="17" x2="8" y2="17"></line>
             <polyline points="10 9 9 9 8 9"></polyline>
           </svg>
-          <h2>모의평가</h2>
+          <h2>모의평가 - 유리병 균열 패턴</h2>
           <p>유리병 균열 패턴 문항</p>
         </a>
 
@@ -119,7 +119,7 @@
             <line x1="16" y1="17" x2="8" y2="17"></line>
             <polyline points="10 9 9 9 8 9"></polyline>
           </svg>
-          <h2>모의평가</h2>
+          <h2>모의평가 - 대학입시알고리즘</h2>
           <p>대학입시알고리즘 문항</p>
         </a>
 
@@ -173,9 +173,9 @@
   </div>
 
   <script type="module">
-    import { auth, db, googleProvider, isAdmin } from './src/firebaseConfig.js';
+    import { auth, db, googleProvider, isAdmin, addAdmin } from './src/firebaseConfig.js';
     import { signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth';
-    import { doc, getDoc } from 'firebase/firestore';
+    import { doc, getDoc, query, where, getDocs, collection, setDoc, serverTimestamp } from 'firebase/firestore';
     import Swal from 'sweetalert2';
 
     // DOM 요소
@@ -211,7 +211,7 @@
         const result = await signInWithPopup(auth, googleProvider);
         console.log('✅ 로그인 성공:', result.user.email);
         
-        // 로딩 알림 닫기 (성공은 onAuthStateChanged에서 처리)
+        // 로딩 알림 닫기 (onAuthStateChanged에서 처리)
         Swal.close();
         
       } catch (error) {
@@ -322,45 +322,183 @@
       }
     });
 
+    // 사용자 등록 처리 함수
+    let isRegistering = false;
+    let registrationComplete = false;
+    async function handleUserRegistration(user) {
+      isRegistering = true;
+      registrationComplete = false;
+      try {
+        // users 컬렉션에서 해당 UID로 이미 등록된 사용자 확인
+        const userQuery = query(collection(db, 'users'), where('uid', '==', user.uid));
+        const userSnapshot = await getDocs(userQuery);
+        
+        if (!userSnapshot.empty) {
+          // 이미 등록된 사용자
+          const userData = userSnapshot.docs[0].data();
+          const displayName = userData.name 
+            ? `${userData.name}${userData.affiliation ? ` (${userData.affiliation})` : ''}`
+            : (user.displayName || user.email);
+          
+          userInfo.textContent = `👤 ${displayName} 님`;
+          isRegistering = false;
+          registrationComplete = true;
+          // UI 업데이트
+          await updateUserUI(user);
+          return;
+        }
+        
+        // 첫 로그인 - 코드 입력 받기
+        const codeResult = await Swal.fire({
+          title: '코드 입력',
+          html: `
+            <p style="margin-bottom: 1rem; color: #6b7280;">첫 로그인입니다. 코드를 입력해주세요.</p>
+            <input id="swal-code" class="swal2-input" placeholder="코드 입력" style="text-transform: uppercase;" maxlength="5">
+          `,
+          showCancelButton: false,
+          confirmButtonText: '확인',
+          cancelButtonText: '취소',
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          preConfirm: () => {
+            const code = document.getElementById('swal-code').value.trim().toUpperCase();
+            if (!code) {
+              Swal.showValidationMessage('코드를 입력해주세요.');
+              return false;
+            }
+            return code;
+          }
+        });
+        
+        if (!codeResult.isConfirmed) {
+          // 코드 입력 취소 시 로그아웃
+          await signOut(auth);
+          isRegistering = false;
+          return;
+        }
+        
+        const code = codeResult.value;
+        
+        // 관리자 코드 확인
+        if (code === '12345') {
+          // 관리자로 등록
+          await addAdmin(user.uid);
+          await Swal.fire({
+            icon: 'success',
+            title: '관리자 등록 완료',
+            text: '관리자 계정으로 등록되었습니다.',
+            timer: 2000,
+            showConfirmButton: false
+          });
+          userInfo.textContent = `👤 ${user.displayName || user.email} 님 (관리자)`;
+          isRegistering = false;
+          registrationComplete = true;
+          // UI 업데이트
+          await updateUserUI(user);
+          return;
+        }
+        
+        // 일반 사용자 코드 확인
+        const codeQuery = query(collection(db, 'users'), where('code', '==', code));
+        const codeSnapshot = await getDocs(codeQuery);
+        
+        if (codeSnapshot.empty) {
+          await Swal.fire({
+            icon: 'error',
+            title: '코드 오류',
+            text: '올바른 코드를 입력해주세요.',
+            confirmButtonText: '확인'
+          });
+          await signOut(auth);
+          isRegistering = false;
+          registrationComplete = true;
+          return;
+        }
+        
+        // 코드가 이미 사용된 경우
+        const userDoc = codeSnapshot.docs[0];
+        const userData = userDoc.data();
+        if (userData.uid) {
+          await Swal.fire({
+            icon: 'error',
+            title: '코드 사용 불가',
+            text: '이미 사용된 코드입니다.',
+            confirmButtonText: '확인'
+          });
+          await signOut(auth);
+          isRegistering = false;
+          registrationComplete = true;
+          return;
+        }
+        
+        // 사용자 정보 업데이트
+        await setDoc(doc(db, 'users', userDoc.id), {
+          ...userData,
+          uid: user.uid,
+          email: user.email,
+          linkedAt: serverTimestamp()
+        }, { merge: true });
+        
+        const displayName = userData.name 
+          ? `${userData.name}${userData.affiliation ? ` (${userData.affiliation})` : ''}`
+          : (user.displayName || user.email);
+        
+        await Swal.fire({
+          icon: 'success',
+          title: '등록 완료',
+          text: `${displayName}님, 환영합니다!`,
+          timer: 2000,
+          showConfirmButton: false
+        });
+        
+        userInfo.textContent = `👤 ${displayName} 님`;
+        isRegistering = false;
+        registrationComplete = true;
+        // UI 업데이트
+        await updateUserUI(user);
+        
+      } catch (error) {
+        console.error('사용자 등록 오류:', error);
+        await Swal.fire({
+          icon: 'error',
+          title: '등록 실패',
+          text: error.message || '사용자 등록 중 오류가 발생했습니다.',
+          confirmButtonText: '확인'
+        });
+        await signOut(auth);
+        isRegistering = false;
+        registrationComplete = true;
+      }
+    }
+
     // 인증 상태 변경 감지
     onAuthStateChanged(auth, async (user) => {
       if (user) {
-        // 로그인된 경우
-        userInfo.textContent = `👤 ${user.displayName || user.email} 님`;
-        loginBtn.style.display = 'none';
-        logoutBtn.style.display = 'flex';
-
-        // 모든 네비게이션 항목 활성화
-        Object.values(navItems).forEach(navItem => {
-          if (navItem) {
-            navItem.classList.add('visible');
-          }
-        });
-
-        // 메뉴 설정 불러오기 및 적용
-        await loadMenuSettings();
-
-        // 관리자 여부 확인
-        const userIsAdmin = isAdmin(user.uid);
-        if (userIsAdmin) {
-          navItems.admin.classList.add('show');
-        } else {
-          navItems.admin.classList.remove('show');
+        // 등록 처리 중이면 기다림 (handleUserRegistration이 완료될 때까지)
+        if (isRegistering) {
+          // 등록 완료까지 대기
+          const checkRegistration = setInterval(async () => {
+            if (registrationComplete) {
+              clearInterval(checkRegistration);
+              // 등록 완료 후 UI 업데이트
+              await updateUserUI(user);
+            }
+          }, 100);
+          return;
         }
-
-        // 로그인 성공 알림 (처음 로그인한 경우에만, 로딩이 이미 닫힌 경우)
-        if (sessionStorage.getItem('justLoggedIn') !== 'true') {
-          sessionStorage.setItem('justLoggedIn', 'true');
-          // 약간의 지연을 두어 로딩이 완전히 닫힌 후 표시
-          setTimeout(() => {
-            Swal.fire({
-              icon: 'success',
-              title: '로그인 성공',
-              text: `${user.displayName || user.email}님, 환영합니다!`,
-              timer: 2000,
-              showConfirmButton: false
-            });
-          }, 300);
+        
+        // 첫 로그인인지 확인
+        const userQuery = query(collection(db, 'users'), where('uid', '==', user.uid));
+        const userSnapshot = await getDocs(userQuery);
+        const adminDoc = await getDoc(doc(db, 'adminUsers', user.uid));
+        
+        // 이미 등록된 사용자이거나 관리자인 경우
+        if (!userSnapshot.empty || adminDoc.exists()) {
+          await updateUserUI(user);
+        } else {
+          // 첫 로그인 - 코드 입력 처리
+          // handleUserRegistration 내에서 updateUserUI를 호출하므로 여기서는 호출하지 않음
+          await handleUserRegistration(user);
         }
       } else {
         // 로그아웃된 경우
@@ -381,6 +519,64 @@
         sessionStorage.removeItem('justLoggedIn');
       }
     });
+    
+    // 사용자 UI 업데이트 함수
+    async function updateUserUI(user) {
+      // 사용자 정보 가져오기
+      try {
+        const userQuery = query(collection(db, 'users'), where('uid', '==', user.uid));
+        const userSnapshot = await getDocs(userQuery);
+        
+        let displayName = user.displayName || user.email;
+        if (!userSnapshot.empty) {
+          const userData = userSnapshot.docs[0].data();
+          if (userData.name) {
+            displayName = `${userData.name}${userData.affiliation ? ` (${userData.affiliation})` : ''}`;
+          }
+        }
+        
+        userInfo.textContent = `👤 ${displayName} 님`;
+      } catch (error) {
+        console.error('사용자 정보 불러오기 오류:', error);
+        userInfo.textContent = `👤 ${user.displayName || user.email} 님`;
+      }
+      
+      loginBtn.style.display = 'none';
+      logoutBtn.style.display = 'flex';
+
+      // 모든 네비게이션 항목 활성화
+      Object.values(navItems).forEach(navItem => {
+        if (navItem) {
+          navItem.classList.add('visible');
+        }
+      });
+
+      // 메뉴 설정 불러오기 및 적용
+      await loadMenuSettings();
+
+      // 관리자 여부 확인
+      const userIsAdmin = await isAdmin(user.uid);
+      if (userIsAdmin) {
+        navItems.admin.classList.add('show');
+      } else {
+        navItems.admin.classList.remove('show');
+      }
+
+      // 로그인 성공 알림 (처음 로그인한 경우에만, 등록 완료된 경우는 handleUserRegistration에서 이미 표시)
+      if (sessionStorage.getItem('justLoggedIn') !== 'true' && !isRegistering && !registrationComplete) {
+        sessionStorage.setItem('justLoggedIn', 'true');
+        // 약간의 지연을 두어 로딩이 완전히 닫힌 후 표시
+        setTimeout(() => {
+          Swal.fire({
+            icon: 'success',
+            title: '로그인 성공',
+            text: `${user.displayName || user.email}님, 환영합니다!`,
+            timer: 2000,
+            showConfirmButton: false
+          });
+        }, 300);
+      }
+    }
   </script>
 </body>
 </html>

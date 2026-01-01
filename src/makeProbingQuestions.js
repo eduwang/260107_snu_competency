@@ -95,7 +95,8 @@ function initTables() {
 // 메뉴 설정 확인 함수
 async function checkMenuAccess(user) {
   // 관리자는 항상 접근 가능
-  if (isAdmin(user.uid)) {
+  const userIsAdmin = await isAdmin(user.uid);
+  if (userIsAdmin) {
     return true;
   }
 

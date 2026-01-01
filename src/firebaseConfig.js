@@ -41,7 +41,35 @@ export const ADMIN_UIDS = import.meta.env.VITE_ADMIN_UIDS
   ? import.meta.env.VITE_ADMIN_UIDS.split(',').map(uid => uid.trim())
   : [];
 
-// 관리자 여부 확인 함수
-export function isAdmin(uid) {
-  return ADMIN_UIDS.includes(uid);
+// 관리자 여부 확인 함수 (Firestore에서도 확인)
+export async function isAdmin(uid) {
+  // 환경변수에서 관리자 UID 확인
+  if (ADMIN_UIDS.includes(uid)) {
+    return true;
+  }
+  
+  // Firestore에서 관리자 목록 확인
+  try {
+    const { doc, getDoc } = await import('firebase/firestore');
+    const adminDoc = await getDoc(doc(db, 'adminUsers', uid));
+    return adminDoc.exists();
+  } catch (error) {
+    console.error('관리자 확인 오류:', error);
+    return false;
+  }
+}
+
+// 관리자 추가 함수
+export async function addAdmin(uid) {
+  try {
+    const { doc, setDoc, serverTimestamp } = await import('firebase/firestore');
+    await setDoc(doc(db, 'adminUsers', uid), {
+      uid: uid,
+      createdAt: serverTimestamp()
+    });
+    return true;
+  } catch (error) {
+    console.error('관리자 추가 오류:', error);
+    return false;
+  }
 }
