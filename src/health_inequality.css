@@ -118,13 +118,67 @@
   border-radius: 8px;
   padding: 1.5rem;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.question-tabs-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* 문항별 탭 스타일 */
+.question-tabs {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #e5e7eb;
+  flex-shrink: 0;
+}
+
+.question-tab-button {
+  padding: 0.6rem 1.2rem;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  font-weight: 500;
+  color: #6b7280;
+  transition: all 0.2s;
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
+.question-tab-button:hover {
+  color: #2563eb;
+}
+
+.question-tab-button.active {
+  color: #2563eb;
+  border-bottom-color: #2563eb;
+}
+
+.question-tab-content {
+  display: none;
+  flex: 1;
+  overflow: hidden;
+}
+
+.question-tab-content.active {
+  display: flex;
+  flex-direction: column;
 }
 
 .materials-scrollable {
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  overflow-y: auto;
+  flex: 1;
+  padding-right: 0.5rem;
 }
 
 .materials-section {
@@ -158,6 +212,57 @@
   border: 1px solid #e5e7eb;
   line-height: 1.6;
   color: #374151;
+}
+
+.document-text p {
+  margin-bottom: 0.5rem;
+}
+
+.document-text p:last-child {
+  margin-bottom: 0;
+}
+
+/* 유튜브 링크 스타일 (인라인) */
+.youtube-link-inline {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  margin-left: 0.5rem;
+  color: #ff0000;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.youtube-link-inline:hover {
+  color: #cc0000;
+  transform: scale(1.1);
+}
+
+.youtube-link-inline svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+/* 이미지 컨테이너 스타일 */
+.document-image-container {
+  margin: 1.5rem 0;
+  text-align: center;
+}
+
+.document-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.document-image:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .question-item {
@@ -207,8 +312,31 @@
   white-space: pre-wrap;
 }
 
-/* 예시 답안, 평가 기준, 탐침 질문 아이템 */
-.answer-item,
+/* 예시 답안 텍스트 스타일 */
+.answer-text {
+  padding: 1rem;
+  background: #ffffff;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  line-height: 1.8;
+  color: #374151;
+}
+
+.materials-scrollable .materials-section .answer-text p {
+  margin: 0 0 1rem 0 !important;
+  /* NOTE: pre-line이면 <p>가 줄바꿈으로 시작할 때 "빈 첫 줄"이 생겨 text-indent가 안 보일 수 있음 */
+  white-space: normal;
+  text-indent: 1em !important;
+  padding: 0 !important;
+  text-align: left;
+  line-height: 1.8;
+}
+
+.answer-text p:last-child {
+  margin-bottom: 0;
+}
+
+/* 평가 기준, 탐침 질문 아이템 */
 .criteria-item,
 .probing-item {
   margin-bottom: 1.5rem;
@@ -218,13 +346,11 @@
   border: 1px solid #e5e7eb;
 }
 
-.answer-item:last-child,
 .criteria-item:last-child,
 .probing-item:last-child {
   margin-bottom: 0;
 }
 
-.answer-item h3,
 .criteria-item h3,
 .probing-item h3 {
   margin: 0 0 1rem 0;
@@ -398,6 +524,60 @@
   cursor: not-allowed;
 }
 
+/* 학생 A 답변 콘텐츠 스타일 */
+.student-answer-content {
+  padding: 1rem;
+  background: #f9fafb;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  min-height: 300px;
+  line-height: 1.8;
+  color: #374151;
+  white-space: pre-wrap;
+  overflow-y: auto;
+  max-height: 600px;
+}
+
+.student-answer-content img {
+  max-width: 100%;
+  height: auto;
+  margin: 1rem 0;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.student-answer-content img:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* 이미지 팝업 스타일 */
+.image-popup {
+  max-width: 95vw !important;
+  max-height: 95vh !important;
+}
+
+.image-popup-close {
+  color: white !important;
+  font-size: 2rem !important;
+  opacity: 0.8;
+}
+
+.image-popup-close:hover {
+  opacity: 1;
+}
+
+.student-answer-content p {
+  margin: 0 0 1rem 0;
+  text-indent: 1em;
+}
+
+.student-answer-content p:last-child {
+  margin-bottom: 0;
+}
+
 /* 반응형 디자인 */
 @media (max-width: 1024px) {
   .materials-layout {
@@ -436,4 +616,3 @@
     grid-template-columns: 1fr;
   }
 }
-

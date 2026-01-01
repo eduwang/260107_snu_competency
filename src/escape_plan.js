@@ -1986,6 +1986,27 @@ document.addEventListener('DOMContentLoaded', () => {
     submitBtnB.addEventListener('click', submitProbingB);
   }
 
+  // 이미지 클릭 시 팝업으로 크게 보기
+  document.addEventListener('click', (e) => {
+    if (e.target.tagName === 'IMG' && e.target.src) {
+      const imgSrc = e.target.src;
+      const imgAlt = e.target.alt || '이미지';
+      
+      Swal.fire({
+        html: `<img src="${imgSrc}" alt="${imgAlt}" style="max-width: 90vw; max-height: 90vh; width: auto; height: auto; border-radius: 8px;">`,
+        width: 'auto',
+        padding: '1rem',
+        showConfirmButton: false,
+        showCloseButton: true,
+        background: 'rgba(0, 0, 0, 0.9)',
+        customClass: {
+          popup: 'image-popup',
+          closeButton: 'image-popup-close'
+        }
+      });
+    }
+  });
+
   // 내가 만든 탐침 질문 보기 버튼
   const viewMyProbingBtn = document.getElementById('view-my-probing-questions-btn');
   if (viewMyProbingBtn) {
