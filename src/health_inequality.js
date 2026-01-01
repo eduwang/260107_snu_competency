@@ -356,8 +356,13 @@ function initCriteriaTables() {
   for (let i = 1; i <= 5; i++) {
     const container = document.getElementById(`criteria-table-${i}`);
     if (container) {
+      const data = criteriaData[i] || [['', '']];
+      const rowCount = data.length;
+      // 행 수에 따라 높이 자동 계산 (헤더 1줄 + 데이터 행 수, 각 행 약 50px + 여유 공간)
+      const calculatedHeight = Math.max(150, (rowCount + 1) * 50 + 20);
+      
       criteriaTables[i] = new Handsontable(container, {
-        data: criteriaData[i] || [['', '']], // 초기 데이터 사용, 없으면 빈 데이터
+        data: data,
         colHeaders: ['역량', '평가 기준'],
         rowHeaders: true,
         contextMenu: true,
@@ -366,13 +371,14 @@ function initCriteriaTables() {
         minCols: 2,
         licenseKey: 'non-commercial-and-evaluation',
         width: '100%',
-        height: 200,
+        height: calculatedHeight,
         stretchH: 'all',
         manualRowResize: true,
         manualColumnResize: true,
         autoWrapRow: true,
         autoWrapCol: true,
         autoRowSize: true,
+        wordWrap: true,
         readOnly: true, // 읽기 전용
         columns: [
           { 
@@ -388,7 +394,45 @@ function initCriteriaTables() {
             data: 1, 
             className: 'htLeft'
           }
-        ]
+        ],
+        afterRender: function() {
+          // Handsontable 렌더링 후 높이 재조정
+          const instance = this;
+          setTimeout(() => {
+            try {
+              // 실제 DOM 요소의 높이를 측정
+              const tableElement = instance.rootElement;
+              if (tableElement) {
+                const wtHolder = tableElement.querySelector('.ht_master .wtHolder');
+                if (wtHolder) {
+                  const tableBody = wtHolder.querySelector('.ht_master table tbody');
+                  const tableHeader = wtHolder.querySelector('.ht_master table thead');
+                  
+                  if (tableBody && tableHeader) {
+                    // 헤더 높이
+                    const headerHeight = tableHeader.offsetHeight;
+                    // 각 행의 실제 높이 합산
+                    let bodyHeight = 0;
+                    const rows = tableBody.querySelectorAll('tr');
+                    rows.forEach(row => {
+                      bodyHeight += row.offsetHeight;
+                    });
+                    
+                    // 총 높이 계산 (여유 공간 포함)
+                    const totalHeight = headerHeight + bodyHeight + 10;
+                    instance.updateSettings({ height: totalHeight });
+                  }
+                }
+              }
+            } catch (error) {
+              console.error('높이 계산 오류:', error);
+              // 오류 발생 시 기본 높이 사용
+              const rowCount = instance.countRows();
+              const fallbackHeight = Math.max(200, (rowCount + 1) * 60 + 30);
+              instance.updateSettings({ height: fallbackHeight });
+            }
+          }, 200);
+        }
       });
     }
   }
@@ -401,6 +445,9 @@ function initCriteriaTables() {
       ['자기 관리', '과제 수행 및 개선 과정에서 지원 분야에 대한 자신감, 학습과 탐구, 진로 설계의 자기주도성을 보이고 있는가? 적절한 학습 전략을 설정하고 이끌어갈 수 있는 역량을 드러내었는가?'],
     ];
     
+    const summaryRowCount = summaryCriteriaData.length;
+    const summaryCalculatedHeight = Math.max(150, (summaryRowCount + 1) * 50 + 20);
+    
     criteriaTables['summary'] = new Handsontable(summaryContainer, {
       data: summaryCriteriaData,
       colHeaders: ['역량', '평가 기준'],
@@ -411,13 +458,14 @@ function initCriteriaTables() {
       minCols: 2,
       licenseKey: 'non-commercial-and-evaluation',
       width: '100%',
-      height: 200,
+      height: summaryCalculatedHeight,
       stretchH: 'all',
       manualRowResize: true,
       manualColumnResize: true,
       autoWrapRow: true,
       autoWrapCol: true,
       autoRowSize: true,
+      wordWrap: true,
       readOnly: true, // 읽기 전용
       columns: [
         { 
@@ -433,7 +481,45 @@ function initCriteriaTables() {
           data: 1, 
           className: 'htLeft'
         }
-      ]
+      ],
+      afterRender: function() {
+        // Handsontable 렌더링 후 높이 재조정
+        const instance = this;
+        setTimeout(() => {
+          try {
+            // 실제 DOM 요소의 높이를 측정
+            const tableElement = instance.rootElement;
+            if (tableElement) {
+              const wtHolder = tableElement.querySelector('.ht_master .wtHolder');
+              if (wtHolder) {
+                const tableBody = wtHolder.querySelector('.ht_master table tbody');
+                const tableHeader = wtHolder.querySelector('.ht_master table thead');
+                
+                if (tableBody && tableHeader) {
+                  // 헤더 높이
+                  const headerHeight = tableHeader.offsetHeight;
+                  // 각 행의 실제 높이 합산
+                  let bodyHeight = 0;
+                  const rows = tableBody.querySelectorAll('tr');
+                  rows.forEach(row => {
+                    bodyHeight += row.offsetHeight;
+                  });
+                  
+                  // 총 높이 계산 (여유 공간 포함)
+                  const totalHeight = headerHeight + bodyHeight + 10;
+                  instance.updateSettings({ height: totalHeight });
+                }
+              }
+            }
+          } catch (error) {
+            console.error('높이 계산 오류:', error);
+            // 오류 발생 시 기본 높이 사용
+            const rowCount = instance.countRows();
+            const fallbackHeight = Math.max(200, (rowCount + 1) * 60 + 30);
+            instance.updateSettings({ height: fallbackHeight });
+          }
+        }, 200);
+      }
     });
   }
 
@@ -1496,8 +1582,12 @@ function initProbingQuestionScreensB() {
         }
       }
       
+      const criteriaData = questionInfo.criteria || [['', '']];
+      const rowCount = criteriaData.length;
+      const calculatedHeight = Math.max(150, (rowCount + 1) * 50 + 20);
+      
       new Handsontable(criteriaContainer, {
-        data: questionInfo.criteria,
+        data: criteriaData,
         colHeaders: ['역량', '평가 기준'],
         rowHeaders: true,
         contextMenu: true,
@@ -1506,13 +1596,14 @@ function initProbingQuestionScreensB() {
         minCols: 2,
         licenseKey: 'non-commercial-and-evaluation',
         width: '100%',
-        height: 200,
+        height: calculatedHeight,
         stretchH: 'all',
         manualRowResize: true,
         manualColumnResize: true,
         autoWrapRow: true,
         autoWrapCol: true,
         autoRowSize: true,
+        wordWrap: true,
         readOnly: true,
         columns: [
           { 
@@ -1528,7 +1619,45 @@ function initProbingQuestionScreensB() {
             data: 1, 
             className: 'htLeft'
           }
-        ]
+        ],
+        afterRender: function() {
+          // Handsontable 렌더링 후 높이 재조정
+          const instance = this;
+          setTimeout(() => {
+            try {
+              // 실제 DOM 요소의 높이를 측정
+              const tableElement = instance.rootElement;
+              if (tableElement) {
+                const wtHolder = tableElement.querySelector('.ht_master .wtHolder');
+                if (wtHolder) {
+                  const tableBody = wtHolder.querySelector('.ht_master table tbody');
+                  const tableHeader = wtHolder.querySelector('.ht_master table thead');
+                  
+                  if (tableBody && tableHeader) {
+                    // 헤더 높이
+                    const headerHeight = tableHeader.offsetHeight;
+                    // 각 행의 실제 높이 합산
+                    let bodyHeight = 0;
+                    const rows = tableBody.querySelectorAll('tr');
+                    rows.forEach(row => {
+                      bodyHeight += row.offsetHeight;
+                    });
+                    
+                    // 총 높이 계산 (여유 공간 포함)
+                    const totalHeight = headerHeight + bodyHeight + 10;
+                    instance.updateSettings({ height: totalHeight });
+                  }
+                }
+              }
+            } catch (error) {
+              console.error('높이 계산 오류:', error);
+              // 오류 발생 시 기본 높이 사용
+              const rowCount = instance.countRows();
+              const fallbackHeight = Math.max(200, (rowCount + 1) * 60 + 30);
+              instance.updateSettings({ height: fallbackHeight });
+            }
+          }, 200);
+        }
       });
     }
 
@@ -1668,8 +1797,12 @@ function initProbingQuestionScreens() {
         criteriaTables[i].destroy();
       }
       
+      const criteriaData = questionInfo.criteria || [['', '']];
+      const rowCount = criteriaData.length;
+      const calculatedHeight = Math.max(150, (rowCount + 1) * 50 + 20);
+      
       criteriaTables[i] = new Handsontable(criteriaContainer, {
-        data: questionInfo.criteria,
+        data: criteriaData,
         colHeaders: ['역량', '평가 기준'],
         rowHeaders: true,
         contextMenu: true,
@@ -1678,13 +1811,14 @@ function initProbingQuestionScreens() {
         minCols: 2,
         licenseKey: 'non-commercial-and-evaluation',
         width: '100%',
-        height: 200,
+        height: calculatedHeight,
         stretchH: 'all',
         manualRowResize: true,
         manualColumnResize: true,
         autoWrapRow: true,
         autoWrapCol: true,
         autoRowSize: true,
+        wordWrap: true,
         readOnly: true,
         columns: [
           { 
@@ -1700,7 +1834,45 @@ function initProbingQuestionScreens() {
             data: 1, 
             className: 'htLeft'
           }
-        ]
+        ],
+        afterRender: function() {
+          // Handsontable 렌더링 후 높이 재조정
+          const instance = this;
+          setTimeout(() => {
+            try {
+              // 실제 DOM 요소의 높이를 측정
+              const tableElement = instance.rootElement;
+              if (tableElement) {
+                const wtHolder = tableElement.querySelector('.ht_master .wtHolder');
+                if (wtHolder) {
+                  const tableBody = wtHolder.querySelector('.ht_master table tbody');
+                  const tableHeader = wtHolder.querySelector('.ht_master table thead');
+                  
+                  if (tableBody && tableHeader) {
+                    // 헤더 높이
+                    const headerHeight = tableHeader.offsetHeight;
+                    // 각 행의 실제 높이 합산
+                    let bodyHeight = 0;
+                    const rows = tableBody.querySelectorAll('tr');
+                    rows.forEach(row => {
+                      bodyHeight += row.offsetHeight;
+                    });
+                    
+                    // 총 높이 계산 (여유 공간 포함)
+                    const totalHeight = headerHeight + bodyHeight + 10;
+                    instance.updateSettings({ height: totalHeight });
+                  }
+                }
+              }
+            } catch (error) {
+              console.error('높이 계산 오류:', error);
+              // 오류 발생 시 기본 높이 사용
+              const rowCount = instance.countRows();
+              const fallbackHeight = Math.max(200, (rowCount + 1) * 60 + 30);
+              instance.updateSettings({ height: fallbackHeight });
+            }
+          }, 200);
+        }
       });
     }
 
