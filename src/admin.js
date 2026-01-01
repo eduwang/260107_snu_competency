@@ -629,17 +629,35 @@ async function loadMenuSettings() {
     
     if (settingsDoc.exists()) {
       const data = settingsDoc.data();
-      document.getElementById('activity1Toggle').checked = data.activity1 !== false;
+      document.getElementById('mockEval01Toggle').checked = data.mockEval01 !== false;
+      document.getElementById('mockEval02Toggle').checked = data.mockEval02 !== false;
+      document.getElementById('probing01Toggle').checked = data.probing01 !== false;
+      document.getElementById('probing02Toggle').checked = data.probing02 !== false;
       document.getElementById('activity2Toggle').checked = data.activity2 !== false;
     } else {
       // 기본값: 모두 활성화
-      document.getElementById('activity1Toggle').checked = true;
+      document.getElementById('mockEval01Toggle').checked = true;
+      document.getElementById('mockEval02Toggle').checked = true;
+      document.getElementById('probing01Toggle').checked = true;
+      document.getElementById('probing02Toggle').checked = true;
       document.getElementById('activity2Toggle').checked = true;
     }
 
     // 토글 이벤트 추가
-    document.getElementById('activity1Toggle').addEventListener('change', async (e) => {
-      await saveMenuSettings('activity1', e.target.checked);
+    document.getElementById('mockEval01Toggle').addEventListener('change', async (e) => {
+      await saveMenuSettings('mockEval01', e.target.checked);
+    });
+
+    document.getElementById('mockEval02Toggle').addEventListener('change', async (e) => {
+      await saveMenuSettings('mockEval02', e.target.checked);
+    });
+
+    document.getElementById('probing01Toggle').addEventListener('change', async (e) => {
+      await saveMenuSettings('probing01', e.target.checked);
+    });
+
+    document.getElementById('probing02Toggle').addEventListener('change', async (e) => {
+      await saveMenuSettings('probing02', e.target.checked);
     });
 
     document.getElementById('activity2Toggle').addEventListener('change', async (e) => {

@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>건강불평등 연구 계획 - 탐침질문 만들기</title>
+  <link rel="stylesheet" href="src/common.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="node_modules/handsontable/dist/handsontable.full.min.css">
+  <link rel="stylesheet" href="node_modules/sweetalert2/dist/sweetalert2.min.css">
+  <link rel="stylesheet" href="src/health_inequality.css">
+</head>
+<body>
+  <div class="page-container">
+    <div class="header-section">
+      <h1 style="margin: 0; color: #1f2937;">건강불평등 연구 계획 - 탐침질문 만들기</h1>
+      <div class="user-info-section">
+        <button id="backToMainBtn" class="back-btn">← 메인으로</button>
+        <span id="userInfo">🔐 로그인 후 이용해 주세요.</span>
+        <button id="logoutBtn" style="display: none;">로그아웃</button>
+      </div>
+    </div>
+
+    <!-- 최상단 탭 메뉴 -->
+    <div class="main-tabs">
+      <button class="main-tab-button active" data-main-tab="materials">📄 면접 자료(제시문 및 예시 답안 확인)</button>
+      <button class="main-tab-button" data-main-tab="probing">✍️ 탐침 질문 만들기</button>
+    </div>
+
+    <!-- 면접 자료 확인 탭 -->
+    <div id="materials-tab" class="main-tab-content active">
+      <div class="materials-layout">
+        <!-- 좌측: 제시문 및 문항 -->
+        <div class="materials-left">
+          <div class="materials-section">
+            <h2 class="section-title">제시문 및 문항</h2>
+            <div class="document-content">
+              <!-- 제시문 내용은 여기에 직접 입력 -->
+              <div class="document-text">
+                <p>제시문 내용을 여기에 입력하세요.</p>
+              </div>
+              
+              <!-- 문항 1 -->
+              <div class="question-item">
+                <h3>문항 1</h3>
+                <div class="question-content">
+                  <p>문항 1 내용을 여기에 입력하세요.</p>
+                </div>
+              </div>
+
+              <!-- 문항 2 -->
+              <div class="question-item">
+                <h3>문항 2</h3>
+                <div class="question-content">
+                  <p>문항 2 내용을 여기에 입력하세요.</p>
+                </div>
+              </div>
+
+              <!-- 문항 3 -->
+              <div class="question-item">
+                <h3>문항 3</h3>
+                <div class="question-content">
+                  <p>문항 3 내용을 여기에 입력하세요.</p>
+                </div>
+              </div>
+
+              <!-- 문항 4 -->
+              <div class="question-item">
+                <h3>문항 4</h3>
+                <div class="question-content">
+                  <p>문항 4 내용을 여기에 입력하세요.</p>
+                </div>
+              </div>
+
+              <!-- 문항 5 -->
+              <div class="question-item">
+                <h3>문항 5</h3>
+                <div class="question-content">
+                  <p>문항 5 내용을 여기에 입력하세요.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 우측: 예시 답안, 평가 기준, 탐침 질문 -->
+        <div class="materials-right">
+          <div class="materials-scrollable">
+            <!-- 예시 답안 섹션 -->
+            <div class="materials-section">
+              <h2 class="section-title">예시 답안</h2>
+              
+              <!-- 문항 1 예시 답안 -->
+              <div class="answer-item">
+                <h3>문항 1</h3>
+                <div class="two-column-grid">
+                  <div class="column-item">
+                    <h4>예시 답안 1</h4>
+                    <p>예시 답안 1 내용을 여기에 입력하세요.</p>
+                  </div>
+                  <div class="column-item">
+                    <h4>예시 답안 2</h4>
+                    <p>예시 답안 2 내용을 여기에 입력하세요.</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 문항 2 예시 답안 -->
+              <div class="answer-item">
+                <h3>문항 2</h3>
+                <div class="two-column-grid">
+                  <div class="column-item">
+                    <h4>예시 답안 1</h4>
+                    <p>예시 답안 1 내용을 여기에 입력하세요.</p>
+                  </div>
+                  <div class="column-item">
+                    <h4>예시 답안 2</h4>
+                    <p>예시 답안 2 내용을 여기에 입력하세요.</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 문항 3 예시 답안 -->
+              <div class="answer-item">
+                <h3>문항 3</h3>
+                <div class="two-column-grid">
+                  <div class="column-item">
+                    <h4>예시 답안 1</h4>
+                    <p>예시 답안 1 내용을 여기에 입력하세요.</p>
+                  </div>
+                  <div class="column-item">
+                    <h4>예시 답안 2</h4>
+                    <p>예시 답안 2 내용을 여기에 입력하세요.</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 문항 4 예시 답안 -->
+              <div class="answer-item">
+                <h3>문항 4</h3>
+                <div class="two-column-grid">
+                  <div class="column-item">
+                    <h4>예시 답안 1</h4>
+                    <p>예시 답안 1 내용을 여기에 입력하세요.</p>
+                  </div>
+                  <div class="column-item">
+                    <h4>예시 답안 2</h4>
+                    <p>예시 답안 2 내용을 여기에 입력하세요.</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 문항 5 예시 답안 -->
+              <div class="answer-item">
+                <h3>문항 5</h3>
+                <div class="two-column-grid">
+                  <div class="column-item">
+                    <h4>예시 답안 1</h4>
+                    <p>예시 답안 1 내용을 여기에 입력하세요.</p>
+                  </div>
+                  <div class="column-item">
+                    <h4>예시 답안 2</h4>
+                    <p>예시 답안 2 내용을 여기에 입력하세요.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 평가 기준 섹션 -->
+            <div class="materials-section">
+              <h2 class="section-title">평가 기준</h2>
+              
+              <!-- 문항 1 평가 기준 -->
+              <div class="criteria-item">
+                <h3>문항 1</h3>
+                <div class="two-column-grid">
+                  <div class="column-item">
+                    <h4>평가 기준 1</h4>
+                    <p>평가 기준 1 내용을 여기에 입력하세요.</p>
+                  </div>
+                  <div class="column-item">
+                    <h4>평가 기준 2</h4>
+                    <p>평가 기준 2 내용을 여기에 입력하세요.</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 문항 2 평가 기준 -->
+              <div class="criteria-item">
+                <h3>문항 2</h3>
+                <div class="two-column-grid">
+                  <div class="column-item">
+                    <h4>평가 기준 1</h4>
+                    <p>평가 기준 1 내용을 여기에 입력하세요.</p>
+                  </div>
+                  <div class="column-item">
+                    <h4>평가 기준 2</h4>
+                    <p>평가 기준 2 내용을 여기에 입력하세요.</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 문항 3 평가 기준 -->
+              <div class="criteria-item">
+                <h3>문항 3</h3>
+                <div class="two-column-grid">
+                  <div class="column-item">
+                    <h4>평가 기준 1</h4>
+                    <p>평가 기준 1 내용을 여기에 입력하세요.</p>
+                  </div>
+                  <div class="column-item">
+                    <h4>평가 기준 2</h4>
+                    <p>평가 기준 2 내용을 여기에 입력하세요.</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 문항 4 평가 기준 -->
+              <div class="criteria-item">
+                <h3>문항 4</h3>
+                <div class="two-column-grid">
+                  <div class="column-item">
+                    <h4>평가 기준 1</h4>
+                    <p>평가 기준 1 내용을 여기에 입력하세요.</p>
+                  </div>
+                  <div class="column-item">
+                    <h4>평가 기준 2</h4>
+                    <p>평가 기준 2 내용을 여기에 입력하세요.</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 문항 5 평가 기준 -->
+              <div class="criteria-item">
+                <h3>문항 5</h3>
+                <div class="two-column-grid">
+                  <div class="column-item">
+                    <h4>평가 기준 1</h4>
+                    <p>평가 기준 1 내용을 여기에 입력하세요.</p>
+                  </div>
+                  <div class="column-item">
+                    <h4>평가 기준 2</h4>
+                    <p>평가 기준 2 내용을 여기에 입력하세요.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 탐침 질문 섹션 -->
+            <div class="materials-section">
+              <h2 class="section-title">탐침 질문</h2>
+              
+              <!-- 문항 1 탐침 질문 -->
+              <div class="probing-item">
+                <h3>문항 1</h3>
+                <div class="two-column-grid">
+                  <div class="column-item">
+                    <h4>상황</h4>
+                    <p>상황 내용을 여기에 입력하세요.</p>
+                  </div>
+                  <div class="column-item">
+                    <h4>탐침질문</h4>
+                    <p>탐침질문 내용을 여기에 입력하세요.</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 문항 2 탐침 질문 -->
+              <div class="probing-item">
+                <h3>문항 2</h3>
+                <div class="two-column-grid">
+                  <div class="column-item">
+                    <h4>상황</h4>
+                    <p>상황 내용을 여기에 입력하세요.</p>
+                  </div>
+                  <div class="column-item">
+                    <h4>탐침질문</h4>
+                    <p>탐침질문 내용을 여기에 입력하세요.</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 문항 3 탐침 질문 -->
+              <div class="probing-item">
+                <h3>문항 3</h3>
+                <div class="two-column-grid">
+                  <div class="column-item">
+                    <h4>상황</h4>
+                    <p>상황 내용을 여기에 입력하세요.</p>
+                  </div>
+                  <div class="column-item">
+                    <h4>탐침질문</h4>
+                    <p>탐침질문 내용을 여기에 입력하세요.</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 문항 4 탐침 질문 -->
+              <div class="probing-item">
+                <h3>문항 4</h3>
+                <div class="two-column-grid">
+                  <div class="column-item">
+                    <h4>상황</h4>
+                    <p>상황 내용을 여기에 입력하세요.</p>
+                  </div>
+                  <div class="column-item">
+                    <h4>탐침질문</h4>
+                    <p>탐침질문 내용을 여기에 입력하세요.</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 문항 5 탐침 질문 -->
+              <div class="probing-item">
+                <h3>문항 5</h3>
+                <div class="two-column-grid">
+                  <div class="column-item">
+                    <h4>상황</h4>
+                    <p>상황 내용을 여기에 입력하세요.</p>
+                  </div>
+                  <div class="column-item">
+                    <h4>탐침질문</h4>
+                    <p>탐침질문 내용을 여기에 입력하세요.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 탐침 질문 만들기 탭 -->
+    <div id="probing-tab" class="main-tab-content">
+      <!-- 하위 탭: 학생 A / 학생 B -->
+      <div class="sub-tabs">
+        <button class="sub-tab-button active" data-sub-tab="student-a">학생 A의 케이스</button>
+        <button class="sub-tab-button" data-sub-tab="student-b">학생 B의 케이스</button>
+      </div>
+
+      <!-- 학생 A의 케이스 -->
+      <div id="student-a-tab" class="sub-tab-content active">
+        <div class="main-content">
+          <!-- 좌측: 면접관과 학생의 가상 대화 -->
+          <div class="section-card">
+            <div class="section-title">
+              <h2>💬 면접관과 학생의 가상 대화</h2>
+              <div style="display: flex; gap: 0.5rem;">
+                <button id="load-btn-a" class="btn btn-primary">불러오기</button>
+                <div class="table-controls">
+                  <button id="add-conversation-row-a" class="btn btn-secondary">행 추가</button>
+                  <button id="del-conversation-row-a" class="btn btn-secondary">행 삭제</button>
+                </div>
+              </div>
+            </div>
+            <div id="conversation-table-a" class="handsontable-container"></div>
+          </div>
+
+          <!-- 우측: 탐침질문 -->
+          <div class="section-card">
+            <div class="section-title">
+              <h2>❓ 탐침질문</h2>
+              <div class="table-controls">
+                <button id="add-probing-row-a" class="btn btn-secondary">행 추가</button>
+                <button id="del-probing-row-a" class="btn btn-secondary">행 삭제</button>
+              </div>
+            </div>
+            <div id="probing-questions-table-a" class="handsontable-container"></div>
+            
+            <!-- 가상의 학생 특성 입력 -->
+            <div class="student-characteristics">
+              <label for="studentCharacteristicsA">가상의 학생 특성</label>
+              <textarea 
+                id="studentCharacteristicsA" 
+                placeholder="예: 수학에 자신감이 없는 학생, 개념 이해는 잘하지만 계산 실수가 많은 학생 등..."
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- 제출 버튼 -->
+          <div class="submit-section">
+            <button id="submitBtnA" class="submit-btn">제출하기 (학생 A)</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 학생 B의 케이스 -->
+      <div id="student-b-tab" class="sub-tab-content">
+        <div class="main-content">
+          <!-- 좌측: 면접관과 학생의 가상 대화 -->
+          <div class="section-card">
+            <div class="section-title">
+              <h2>💬 면접관과 학생의 가상 대화</h2>
+              <div style="display: flex; gap: 0.5rem;">
+                <button id="load-btn-b" class="btn btn-primary">불러오기</button>
+                <div class="table-controls">
+                  <button id="add-conversation-row-b" class="btn btn-secondary">행 추가</button>
+                  <button id="del-conversation-row-b" class="btn btn-secondary">행 삭제</button>
+                </div>
+              </div>
+            </div>
+            <div id="conversation-table-b" class="handsontable-container"></div>
+          </div>
+
+          <!-- 우측: 탐침질문 -->
+          <div class="section-card">
+            <div class="section-title">
+              <h2>❓ 탐침질문</h2>
+              <div class="table-controls">
+                <button id="add-probing-row-b" class="btn btn-secondary">행 추가</button>
+                <button id="del-probing-row-b" class="btn btn-secondary">행 삭제</button>
+              </div>
+            </div>
+            <div id="probing-questions-table-b" class="handsontable-container"></div>
+            
+            <!-- 가상의 학생 특성 입력 -->
+            <div class="student-characteristics">
+              <label for="studentCharacteristicsB">가상의 학생 특성</label>
+              <textarea 
+                id="studentCharacteristicsB" 
+                placeholder="예: 수학에 자신감이 없는 학생, 개념 이해는 잘하지만 계산 실수가 많은 학생 등..."
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- 제출 버튼 -->
+          <div class="submit-section">
+            <button id="submitBtnB" class="submit-btn">제출하기 (학생 B)</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="src/health_inequality.js"></script>
+</body>
+</html>
+

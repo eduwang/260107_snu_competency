@@ -408,6 +408,31 @@
   color: #6b7280;
 }
 
+.sub-menu-settings {
+  margin-top: 1rem;
+  padding-left: 1rem;
+  border-left: 3px solid #e5e7eb;
+}
+
+.sub-menu-item-setting {
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+}
+
+.sub-menu-item-setting:last-child {
+  margin-bottom: 0;
+}
+
+.setting-header h4 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #374151;
+}
+
 /* 토글 스위치 */
 .switch {
   position: relative;
