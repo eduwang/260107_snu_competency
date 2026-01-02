@@ -39,7 +39,25 @@ onAuthStateChanged(auth, async (user) => {
       return;
     }
     
-    document.getElementById('userInfo').textContent = `👤 ${user.displayName || user.email} 님`;
+    // 사용자 정보 표시 (index.html과 동일한 로직)
+    try {
+      const userQuery = query(collection(db, 'users'), where('uid', '==', user.uid));
+      const userSnapshot = await getDocs(userQuery);
+      
+      let displayName = user.displayName || user.email;
+      if (!userSnapshot.empty) {
+        const userData = userSnapshot.docs[0].data();
+        if (userData.name) {
+          displayName = `${userData.name}${userData.affiliation ? ` (${userData.affiliation})` : ''}`;
+        }
+      }
+      
+      document.getElementById('userInfo').textContent = `👤 ${displayName} 님`;
+    } catch (error) {
+      console.error('사용자 정보 불러오기 오류:', error);
+      document.getElementById('userInfo').textContent = `👤 ${user.displayName || user.email} 님`;
+    }
+    
     document.getElementById('logoutBtn').style.display = 'inline-block';
     
     // 초기 데이터 로드
