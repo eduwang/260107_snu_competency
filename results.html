@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="node_modules/sweetalert2/dist/sweetalert2.min.css">
-  <link rel="stylesheet" href="src/results.css">
+  <link rel="stylesheet" href="src/resultsMain.css">
 </head>
 <body>
   <div class="page-container">
@@ -22,26 +22,51 @@
       </div>
     </div>
 
-    <div class="results-layout">
-      <!-- 좌측: 데이터 목록 -->
-      <div class="list-panel">
-        <h2 class="list-title">저장된 목록</h2>
-        <div id="dataList" class="data-list">
-          <p class="empty-message">데이터를 불러오는 중...</p>
+    <!-- 필터 섹션 -->
+    <div class="filters-section">
+      <!-- 시나리오 필터 -->
+      <div class="filter-group">
+        <label class="filter-label">시나리오</label>
+        <div class="tab-group" id="scenarioTabs">
+          <button class="tab-btn active" data-scenario="all">전체</button>
         </div>
       </div>
 
-      <!-- 우측: 상세 내용 -->
-      <div class="detail-panel">
-        <div id="detailContent" class="detail-content">
-          <div class="empty-detail">
-            <p>좌측 목록에서 항목을 선택하세요</p>
-          </div>
+      <!-- 학생 타입 필터 -->
+      <div class="filter-group">
+        <label class="filter-label">학생 타입</label>
+        <div class="tab-group" id="studentTypeTabs">
+          <button class="tab-btn active" data-student-type="all">전체</button>
+          <button class="tab-btn" data-student-type="A">학생 A</button>
+          <button class="tab-btn" data-student-type="B">학생 B</button>
+        </div>
+      </div>
+
+      <!-- 문항 필터 -->
+      <div class="filter-group">
+        <label class="filter-label">문항</label>
+        <div class="tab-group" id="questionTabs">
+          <button class="tab-btn active" data-question="all">전체</button>
+          <button class="tab-btn" data-question="1">문항 1</button>
+          <button class="tab-btn" data-question="2">문항 2</button>
+          <button class="tab-btn" data-question="3">문항 3</button>
+          <button class="tab-btn" data-question="4">문항 4</button>
+          <button class="tab-btn" data-question="5">문항 5</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 결과 표시 영역 -->
+    <div class="results-section">
+      <div id="resultsContent" class="results-content">
+        <div class="empty-state">
+          <p>필터를 선택하여 탐침 질문을 확인하세요.</p>
         </div>
       </div>
     </div>
   </div>
 
-  <script type="module" src="src/results.js"></script>
+  <script type="module" src="src/resultsMain.js"></script>
 </body>
 </html>
+

@@ -64,7 +64,7 @@ function initTablesA() {
   }
   probingQuestionsTableA = new Handsontable(probingContainer, {
     data: [['', '']],
-    colHeaders: ['상황', '탐침질문'],
+    colHeaders: ['상황 분석', '탐침질문'],
     rowHeaders: true,
     contextMenu: true,
     colWidths: [200, 300],
@@ -145,7 +145,7 @@ function initTablesB() {
   }
   probingQuestionsTableB = new Handsontable(probingContainer, {
     data: [['', '']],
-    colHeaders: ['상황', '탐침질문'],
+    colHeaders: ['상황 분석', '탐침질문'],
     rowHeaders: true,
     contextMenu: true,
     colWidths: [200, 300],
@@ -549,7 +549,7 @@ function initCriteriaTables() {
 
     criteriaTables['probing'] = new Handsontable(probingContainer, {
       data: probingData,
-      colHeaders: ['상황', '탐침질문'],
+      colHeaders: ['상황 분석', '탐침질문'],
       rowHeaders: true,
       contextMenu: true,
       colWidths: [250, 500],
@@ -1257,7 +1257,7 @@ function showProbingQuestionsPopup() {
       if (container) {
         new Handsontable(container, {
           data: probingData,
-          colHeaders: ['상황', '탐침질문'],
+          colHeaders: ['상황 분석', '탐침질문'],
           rowHeaders: true,
           contextMenu: true,
           colWidths: [300, 700],
@@ -1685,7 +1685,7 @@ function initProbingQuestionScreensB() {
     if (probingContainer && !probingQuestionsTablesB[i]) {
       probingQuestionsTablesB[i] = new Handsontable(probingContainer, {
         data: [['', '']],
-        colHeaders: ['상황', '탐침질문'],
+        colHeaders: ['상황 분석', '탐침질문'],
         rowHeaders: true,
         contextMenu: true,
         colWidths: [200, 300],
@@ -1902,7 +1902,7 @@ function initProbingQuestionScreens() {
     if (probingContainer && !probingQuestionsTablesA[i]) {
       probingQuestionsTablesA[i] = new Handsontable(probingContainer, {
         data: [['', '']],
-        colHeaders: ['상황', '탐침질문'],
+        colHeaders: ['상황 분석', '탐침질문'],
         rowHeaders: true,
         contextMenu: true,
         colWidths: [200, 300],
@@ -2076,7 +2076,7 @@ async function submitProbingA() {
     text: '제출 후에는 수정할 수 없습니다.',
     icon: 'question',
     showCancelButton: true,
-    confirmButtonText: '제출하기',
+    confirmButtonText: '최종 제출하기',
     cancelButtonText: '취소'
   });
 
@@ -2132,7 +2132,7 @@ async function submitProbingB() {
     text: '제출 후에는 수정할 수 없습니다.',
     icon: 'question',
     showCancelButton: true,
-    confirmButtonText: '제출하기',
+    confirmButtonText: '최종 제출하기',
     cancelButtonText: '취소'
   });
 
