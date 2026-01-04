@@ -451,17 +451,17 @@ function renderQuestionSection(questionNum, questionData, allQuestionData) {
   // 학생 답변에 이미지 추가 (시나리오별로)
   if (studentAnswer && scenario === '대피시뮬레이션') {
     if (questionNum === 4 && studentType === 'A') {
-      studentAnswer = `<img src="/public/probingQuestion/escape_plan_stdA_04.png" alt="학생 A 답변 이미지" class="student-answer-image" style="max-width: 100%; height: auto; margin-bottom: 1rem; border-radius: 6px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); cursor: pointer;"><br>${studentAnswer}`;
+      studentAnswer = `<img src="probingQuestion/escape_plan_stdA_04.png" alt="학생 A 답변 이미지" class="student-answer-image" style="max-width: 100%; height: auto; margin-bottom: 1rem; border-radius: 6px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); cursor: pointer;"><br>${studentAnswer}`;
     } else if (questionNum === 3 && studentType === 'B') {
-      studentAnswer = `<img src="/public/probingQuestion/escape_plan_stdB_03.png" alt="학생 B 답변 이미지" class="student-answer-image" style="max-width: 100%; height: auto; margin-bottom: 1rem; border-radius: 6px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); cursor: pointer;"><br>${studentAnswer}`;
+      studentAnswer = `<img src="probingQuestion/escape_plan_stdB_03.png" alt="학생 B 답변 이미지" class="student-answer-image" style="max-width: 100%; height: auto; margin-bottom: 1rem; border-radius: 6px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); cursor: pointer;"><br>${studentAnswer}`;
     } else if (questionNum === 4 && studentType === 'B') {
-      studentAnswer = `<img src="/public/probingQuestion/escape_plan_stdB_04.png" alt="학생 B 답변 이미지" class="student-answer-image" style="max-width: 100%; height: auto; margin-bottom: 1rem; border-radius: 6px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); cursor: pointer;"><br>${studentAnswer}`;
+      studentAnswer = `<img src="probingQuestion/escape_plan_stdB_04.png" alt="학생 B 답변 이미지" class="student-answer-image" style="max-width: 100%; height: auto; margin-bottom: 1rem; border-radius: 6px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); cursor: pointer;"><br>${studentAnswer}`;
     }
   } else if (studentAnswer && scenario === '건강불평등') {
     if (questionNum === 3 && studentType === 'A') {
-      studentAnswer = `${studentAnswer}<br><img src="/public/probingQuestion/health_inequality_stdA_03.png" alt="학생 A 답변 이미지" class="student-answer-image" style="max-width: 100%; height: auto; margin-top: 1rem; border-radius: 6px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); cursor: pointer;">`;
+      studentAnswer = `${studentAnswer}<br><img src="probingQuestion/health_inequality_stdA_03.png" alt="학생 A 답변 이미지" class="student-answer-image" style="max-width: 100%; height: auto; margin-top: 1rem; border-radius: 6px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); cursor: pointer;">`;
     } else if (questionNum === 3 && studentType === 'B') {
-      studentAnswer = `${studentAnswer}<br><img src="/public/probingQuestion/health_inequality_stdB_03.png" alt="학생 B 답변 이미지" class="student-answer-image" style="max-width: 100%; height: auto; margin-top: 1rem; border-radius: 6px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); cursor: pointer;">`;
+      studentAnswer = `${studentAnswer}<br><img src="probingQuestion/health_inequality_stdB_03.png" alt="학생 B 답변 이미지" class="student-answer-image" style="max-width: 100%; height: auto; margin-top: 1rem; border-radius: 6px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); cursor: pointer;">`;
     }
   }
   
