@@ -1558,9 +1558,9 @@ async function loadProbingDataFromFirestoreB() {
           // 과제 3, 4의 경우 이미지 추가
           let content = '';
           if (i === 3) {
-            content = `<img src="public/probingQuestion/escape_plan_stdB_03.png" alt="학생 B 답변 이미지" style="max-width: 100%; height: auto; margin-bottom: 1rem; border-radius: 6px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);">`;
+            content = `<img src="/public/probingQuestion/escape_plan_stdB_03.png" alt="학생 B 답변 이미지" style="max-width: 100%; height: auto; margin-bottom: 1rem; border-radius: 6px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);">`;
           } else if (i === 4) {
-            content = `<img src="public/probingQuestion/escape_plan_stdB_04.png" alt="학생 B 답변 이미지" style="max-width: 100%; height: auto; margin-bottom: 1rem; border-radius: 6px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);">`;
+            content = `<img src="/public/probingQuestion/escape_plan_stdB_04.png" alt="학생 B 답변 이미지" style="max-width: 100%; height: auto; margin-bottom: 1rem; border-radius: 6px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);">`;
           }
           content += `<p style="margin: 0; text-indent: 1em; line-height: 1.8;">${answerText}</p>`;
           
@@ -1730,7 +1730,7 @@ async function loadProbingDataFromFirestore() {
           // 과제 4의 경우 이미지 추가
           let content = '';
           if (i === 4) {
-            content = `<img src="public/probingQuestion/escape_plan_stdA_04.png" alt="학생 A 답변 이미지" style="max-width: 100%; height: auto; margin-bottom: 1rem; border-radius: 6px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);">`;
+            content = `<img src="/public/probingQuestion/escape_plan_stdA_04.png" alt="학생 A 답변 이미지" style="max-width: 100%; height: auto; margin-bottom: 1rem; border-radius: 6px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);">`;
           }
           content += `<p style="margin: 0; text-indent: 1em; line-height: 1.8;">${answerText}</p>`;
           

@@ -8,8 +8,8 @@ let allData = [];
 let processedData = []; // 탐침 질문을 사용자별로 그룹화한 데이터
 
 // 필터 상태
-let selectedScenario = 'all';
-let selectedStudentType = 'all';
+let selectedScenario = '대피시뮬레이션'; // 기본값을 대피시뮬레이션으로 설정
+let selectedStudentType = 'A'; // 기본값을 학생 A로 설정
 let selectedQuestion = 'all';
 
 // 메뉴 설정 확인 함수
@@ -291,13 +291,31 @@ function processData() {
 // 시나리오 탭 초기화
 function initScenarioTabs() {
   const scenarioTabs = document.getElementById('scenarioTabs');
-  const scenarios = ['all', ...new Set(allData.map(item => item.scenario).filter(Boolean))];
+  // 고정된 시나리오 순서: 대피시뮬레이션, 건강불평등
+  const fixedScenarios = ['대피시뮬레이션', '건강불평등'];
+  
+  // 데이터에 실제로 존재하는 시나리오만 필터링
+  const availableScenarios = fixedScenarios.filter(scenario => 
+    allData.some(item => item.scenario === scenario)
+  );
+  
+  // 사용 가능한 시나리오가 없으면 기본값으로 고정 시나리오 사용
+  const scenarios = availableScenarios.length > 0 ? availableScenarios : fixedScenarios;
   
   scenarioTabs.innerHTML = scenarios.map(scenario => {
-    const label = scenario === 'all' ? '전체' : scenario;
     return `<button class="tab-btn ${selectedScenario === scenario ? 'active' : ''}" 
-                    data-scenario="${scenario}">${label}</button>`;
+                    data-scenario="${scenario}">${scenario}</button>`;
   }).join('');
+  
+  // 기본 선택이 없고 데이터가 있으면 첫 번째 시나리오 선택
+  if (scenarios.length > 0 && !scenarios.includes(selectedScenario)) {
+    selectedScenario = scenarios[0];
+    // active 클래스 업데이트
+    const firstBtn = scenarioTabs.querySelector('.tab-btn');
+    if (firstBtn) {
+      firstBtn.classList.add('active');
+    }
+  }
   
   // 이벤트 리스너는 setupFilterListeners에서 설정
 }
@@ -404,13 +422,13 @@ function renderResults() {
 // 필터링된 데이터 가져오기
 function getFilteredData() {
   return processedData.filter(data => {
-    // 시나리오 필터
-    if (selectedScenario !== 'all' && data.scenario !== selectedScenario) {
+    // 시나리오 필터 (전체 옵션이 없으므로 항상 필터링)
+    if (data.scenario !== selectedScenario) {
       return false;
     }
     
-    // 학생 타입 필터
-    if (selectedStudentType !== 'all' && data.studentType !== selectedStudentType) {
+    // 학생 타입 필터 (전체 옵션이 없으므로 항상 필터링)
+    if (data.studentType !== selectedStudentType) {
       return false;
     }
     
@@ -433,17 +451,17 @@ function renderQuestionSection(questionNum, questionData, allQuestionData) {
   // 학생 답변에 이미지 추가 (시나리오별로)
   if (studentAnswer && scenario === '대피시뮬레이션') {
     if (questionNum === 4 && studentType === 'A') {
-      studentAnswer = `<img src="public/probingQuestion/escape_plan_stdA_04.png" alt="학생 A 답변 이미지" class="student-answer-image" style="max-width: 100%; height: auto; margin-bottom: 1rem; border-radius: 6px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); cursor: pointer;"><br>${studentAnswer}`;
+      studentAnswer = `<img src="/public/probingQuestion/escape_plan_stdA_04.png" alt="학생 A 답변 이미지" class="student-answer-image" style="max-width: 100%; height: auto; margin-bottom: 1rem; border-radius: 6px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); cursor: pointer;"><br>${studentAnswer}`;
     } else if (questionNum === 3 && studentType === 'B') {
-      studentAnswer = `<img src="public/probingQuestion/escape_plan_stdB_03.png" alt="학생 B 답변 이미지" class="student-answer-image" style="max-width: 100%; height: auto; margin-bottom: 1rem; border-radius: 6px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); cursor: pointer;"><br>${studentAnswer}`;
+      studentAnswer = `<img src="/public/probingQuestion/escape_plan_stdB_03.png" alt="학생 B 답변 이미지" class="student-answer-image" style="max-width: 100%; height: auto; margin-bottom: 1rem; border-radius: 6px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); cursor: pointer;"><br>${studentAnswer}`;
     } else if (questionNum === 4 && studentType === 'B') {
-      studentAnswer = `<img src="public/probingQuestion/escape_plan_stdB_04.png" alt="학생 B 답변 이미지" class="student-answer-image" style="max-width: 100%; height: auto; margin-bottom: 1rem; border-radius: 6px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); cursor: pointer;"><br>${studentAnswer}`;
+      studentAnswer = `<img src="/public/probingQuestion/escape_plan_stdB_04.png" alt="학생 B 답변 이미지" class="student-answer-image" style="max-width: 100%; height: auto; margin-bottom: 1rem; border-radius: 6px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); cursor: pointer;"><br>${studentAnswer}`;
     }
   } else if (studentAnswer && scenario === '건강불평등') {
     if (questionNum === 3 && studentType === 'A') {
-      studentAnswer = `${studentAnswer}<br><img src="public/probingQuestion/health_inequality_stdA_03.png" alt="학생 A 답변 이미지" class="student-answer-image" style="max-width: 100%; height: auto; margin-top: 1rem; border-radius: 6px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); cursor: pointer;">`;
+      studentAnswer = `${studentAnswer}<br><img src="/public/probingQuestion/health_inequality_stdA_03.png" alt="학생 A 답변 이미지" class="student-answer-image" style="max-width: 100%; height: auto; margin-top: 1rem; border-radius: 6px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); cursor: pointer;">`;
     } else if (questionNum === 3 && studentType === 'B') {
-      studentAnswer = `${studentAnswer}<br><img src="public/probingQuestion/health_inequality_stdB_03.png" alt="학생 B 답변 이미지" class="student-answer-image" style="max-width: 100%; height: auto; margin-top: 1rem; border-radius: 6px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); cursor: pointer;">`;
+      studentAnswer = `${studentAnswer}<br><img src="/public/probingQuestion/health_inequality_stdB_03.png" alt="학생 B 답변 이미지" class="student-answer-image" style="max-width: 100%; height: auto; margin-top: 1rem; border-radius: 6px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); cursor: pointer;">`;
     }
   }
   
@@ -495,7 +513,7 @@ function renderQuestionSection(questionNum, questionData, allQuestionData) {
   return `
     <div class="question-section">
       <div class="question-header">
-        <h2 class="question-title">문항 ${questionNum}${scenarioLabel}</h2>
+        <h2 class="question-title">과제 ${questionNum}${scenarioLabel}</h2>
         <div class="question-meta">${studentTypeLabel}</div>
       </div>
       
