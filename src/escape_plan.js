@@ -16,6 +16,12 @@ let lastSelectedRow_conv_b = null;
 let lastSelectedRow_prob_b = null;
 let criteriaTables = {}; // 평가 기준 테이블들
 
+// 저장 상태 추적 (과제별, 학생별)
+const saveStatus = {
+  a: {}, // 학생 A의 각 과제별 저장 상태
+  b: {}  // 학생 B의 각 과제별 저장 상태
+};
+
 // Handsontable 초기화 (학생 A)
 function initTablesA() {
   const conversationContainer = document.getElementById('conversation-table-a');
@@ -1318,6 +1324,9 @@ async function startProbingA() {
     const docRef = await addDoc(collection(db, 'probingQuestions'), docData);
     probingDocIdA = docRef.id;
 
+    // 저장 상태 초기화
+    resetSaveStatus('a');
+
     // 화면 전환
     document.getElementById('student-a-start-screen').style.display = 'none';
     document.getElementById('student-a-work-screen').style.display = 'block';
@@ -1408,6 +1417,9 @@ async function startProbingB() {
 
     const docRef = await addDoc(collection(db, 'probingQuestions'), docData);
     probingDocIdB = docRef.id;
+
+    // 저장 상태 초기화
+    resetSaveStatus('b');
 
     // 화면 전환
     document.getElementById('student-b-start-screen').style.display = 'none';
@@ -1824,11 +1836,23 @@ async function saveProbingQuestion(questionNum, studentType) {
       updatedAt: serverTimestamp()
     });
 
+    // 저장 상태 업데이트
+    const now = new Date();
+    const saveTime = now.toTimeString().split(' ')[0].substring(0, 8); // HH:MM:SS 형식
+    
+    saveStatus[studentType][questionNum] = {
+      saved: true,
+      time: saveTime
+    };
+    
+    // 상태 메시지 업데이트
+    updateSaveStatus(questionNum, studentType);
+
     Swal.fire({
       icon: 'success',
       title: '저장 완료',
-      text: '탐침 질문이 저장되었습니다.',
-      timer: 1500,
+      text: `탐침 질문이 저장되었습니다. (${saveTime})`,
+      timer: 2000,
       showConfirmButton: false
     });
   } catch (error) {
@@ -1838,6 +1862,34 @@ async function saveProbingQuestion(questionNum, studentType) {
       title: '오류',
       text: '저장 중 오류가 발생했습니다.'
     });
+  }
+}
+
+// 저장 상태 메시지 업데이트 함수
+function updateSaveStatus(questionNum, studentType) {
+  const statusElement = document.querySelector(
+    `.save-status[data-question="${questionNum}"][data-student="${studentType}"]`
+  );
+  
+  if (!statusElement) return;
+  
+  const status = saveStatus[studentType][questionNum];
+  
+  if (status && status.saved) {
+    statusElement.textContent = `저장됨 (${status.time})`;
+    statusElement.style.color = '#10b981'; // 초록색
+  } else {
+    statusElement.textContent = '저장되지 않음';
+    statusElement.style.color = '#ef4444'; // 빨간색
+  }
+}
+
+// 모든 저장 상태 초기화 (새로 시작하기 클릭 시)
+function resetSaveStatus(studentType) {
+  saveStatus[studentType] = {};
+  // 모든 상태 메시지 업데이트
+  for (let i = 1; i <= 5; i++) {
+    updateSaveStatus(i, studentType);
   }
 }
 
@@ -1964,6 +2016,12 @@ document.addEventListener('DOMContentLoaded', () => {
   initRowControlsA();
   initRowControlsB();
   initLoadButtons();
+  
+  // 초기 저장 상태 메시지 설정
+  for (let i = 1; i <= 5; i++) {
+    updateSaveStatus(i, 'a');
+    updateSaveStatus(i, 'b');
+  }
   
   // 탐침 질문 크게 보기 버튼
   const viewProbingBtn = document.getElementById('view-probing-questions-btn');
