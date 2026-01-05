@@ -779,6 +779,7 @@ async function loadMenuSettings() {
       document.getElementById('probing01Toggle').checked = data.probing01 !== false;
       document.getElementById('probing02Toggle').checked = data.probing02 !== false;
       document.getElementById('activity2Toggle').checked = data.activity2 !== false;
+      document.getElementById('qrCodeToggle').checked = data.qrCode !== false;
     } else {
       // 기본값: 모두 활성화
       document.getElementById('mockEval01Toggle').checked = true;
@@ -786,6 +787,7 @@ async function loadMenuSettings() {
       document.getElementById('probing01Toggle').checked = true;
       document.getElementById('probing02Toggle').checked = true;
       document.getElementById('activity2Toggle').checked = true;
+      document.getElementById('qrCodeToggle').checked = true;
     }
 
     // 토글 이벤트 추가
@@ -807,6 +809,10 @@ async function loadMenuSettings() {
 
     document.getElementById('activity2Toggle').addEventListener('change', async (e) => {
       await saveMenuSettings('activity2', e.target.checked);
+    });
+
+    document.getElementById('qrCodeToggle').addEventListener('change', async (e) => {
+      await saveMenuSettings('qrCode', e.target.checked);
     });
     
   } catch (error) {

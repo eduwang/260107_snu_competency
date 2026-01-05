@@ -65,6 +65,38 @@
     .nav-item.admin-only.show {
       display: flex;
     }
+    
+    .qr-code-container {
+      width: 100%;
+      height: 150px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+      border-radius: 8px;
+      background: #f9fafb;
+    }
+    
+    .qr-code-image {
+      width: 80%;
+      height: 80%;
+      object-fit: contain;
+      transition: transform 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .nav-item:hover .qr-code-image {
+      transform: scale(1.05);
+    }
+    
+    .qr-popup-image {
+      max-width: 90vw;
+      max-height: 90vh;
+      width: auto;
+      height: auto;
+      border-radius: 8px;
+    }
   </style>
 </head>
 <body>
@@ -156,6 +188,14 @@
           <p>다른 참가자들이 제작한 탐침질문과 결과를 확인합니다.</p>
         </a>
 
+        <div class="nav-item visible" id="nav-qr-code">
+          <div class="qr-code-container">
+            <img src="link_qr.png" alt="QR 코드" class="qr-code-image" id="qr-code-image">
+          </div>
+          <h2 class="qr-link-text" style="cursor: pointer;">워크숍 만족도 조사</h2>
+          <p class="qr-link-text" style="cursor: pointer;">Link</p>
+        </div>
+
         <a href="admin.html" class="nav-item admin-only" id="nav-admin">
           <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="3"></circle>
@@ -190,6 +230,13 @@
       results: document.getElementById('nav-results'),
       admin: document.getElementById('nav-admin')
     };
+    
+    const qrCodeItem = document.getElementById('nav-qr-code');
+    
+    // QR 코드 항목은 항상 활성화
+    if (qrCodeItem) {
+      qrCodeItem.classList.add('visible');
+    }
 
     // 로그인 버튼 클릭 이벤트
     loginBtn.addEventListener('click', async () => {
@@ -300,6 +347,9 @@
         if (navItems.results) {
           navItems.results.style.display = (settings.activity2 !== false) ? 'flex' : 'none';
         }
+        if (qrCodeItem) {
+          qrCodeItem.style.display = (settings.qrCode !== false) ? 'flex' : 'none';
+        }
       } catch (error) {
         console.error('메뉴 설정 불러오기 오류:', error);
       }
@@ -320,6 +370,42 @@
           }
         });
       }
+    });
+    
+    // QR 코드 이미지 클릭 이벤트 - 이미지 확대 팝업
+    const qrCodeImage = document.getElementById('qr-code-image');
+    if (qrCodeImage) {
+      qrCodeImage.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        Swal.fire({
+          html: `<img src="link_qr.png" alt="QR 코드" class="qr-popup-image">`,
+          width: 'auto',
+          padding: '2rem',
+          showConfirmButton: true,
+          confirmButtonText: '닫기',
+          customClass: {
+            popup: 'qr-popup',
+            htmlContainer: 'qr-popup-container'
+          },
+          didOpen: () => {
+            const popup = document.querySelector('.qr-popup');
+            if (popup) {
+              popup.style.textAlign = 'center';
+            }
+          }
+        });
+      });
+    }
+    
+    // 텍스트 클릭 이벤트 - Google Forms 링크로 이동
+    const qrLinkTexts = document.querySelectorAll('.qr-link-text');
+    qrLinkTexts.forEach(textElement => {
+      textElement.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        window.open('https://docs.google.com/forms/d/e/1FAIpQLSdDQxJBWnsGv_pkY3zqeFwGaBCApsTQkNrIl0PFyL3Y-0YPsA/viewform', '_blank');
+      });
     });
 
     // 사용자 등록 처리 함수
@@ -506,12 +592,17 @@
         loginBtn.style.display = 'flex';
         logoutBtn.style.display = 'none';
 
-        // 모든 네비게이션 항목 비활성화
+        // 모든 네비게이션 항목 비활성화 (QR 코드 제외)
         Object.values(navItems).forEach(navItem => {
           if (navItem) {
             navItem.classList.remove('visible');
           }
         });
+        
+        // QR 코드 항목은 항상 활성화 유지
+        if (qrCodeItem) {
+          qrCodeItem.classList.add('visible');
+        }
 
         // 관리자 버튼 숨기기
         navItems.admin.classList.remove('show');
